@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Lo-fi site</title>
+    <style>
+        #bgVideo {
+            position: fixed;
+            right: 0;
+            bottom: 0;
+            min-width: 100%;
+            min-height: 100%;
+            width: auto;
+            height: auto;
+            z-index: -100;
+            object-fit: cover;
+            background-color: #000000;
+        }
+
+        body {
+            background-color: rgb(0, 0, 0);
+            font-family: "Lucida Console", "Courier New", monospace;
+            font-weight: bold;
+            font-size: 16px;
+            letter-spacing: 1px;
+            color: #00ff00;
+            text-align: center;
+            text-shadow: 2px 2px 4px black;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .player-container {
+            margin-top: 30px;
+        }
+        .custom-play-btn {
+            background-color: rgba(0, 0, 0, 0.7);
+            color: #ffffff;
+            font-family: "Lucida Console", "Courier New", monospace;
+            font-weight: bold;
+            font-size: 18px;
+            border: 3px solid #ffffff;
+            padding: 15px 30px;
+            cursor: pointer;
+            text-transform: uppercase;
+            box-shadow: 0 0 15px #ffffff;
+            transition: all 0.2s ease;
+        }
+        .custom-play-btn:hover {
+            background-color: #ffffff;
+            color: rgb(255, 255, 255);
+            box-shadow: 0 0 25px #ffffff;
+        }
+        #trackName {
+            margin-top: 40px;
+            font-size: 20px;
+            color: #ffffff; 
+            text-shadow: 0 0 10px #ffffff;
+            opacity: 0; 
+        }
+        .fade-animation {
+            animation: fadeEffect 5s linear forwards; 
+        }
+        @keyframes fadeEffect {
+            0% { opacity: 0; }     
+            15% { opacity: 1; }     
+            80% { opacity: 1; }    
+            100% { opacity: 0; }  
+        }
+        video::-webkit-media-controls { display:none !important; }
+    </style>
+</head>
+<body>
+    <video autoplay loop muted playsinline id="bgVideo">
+        <source src="ba.mp4" type="video/mp4">
+    </video>
+    <div class="player-container">
+        <button class="custom-play-btn" id="playBtn" onclick="togglePlay()">start</button>
+    </div>
+    <div id="trackName"></div>
+    <audio id="bgMusic"></audio>
+    <script>
+        const playlist = [
+            { file: "New-Beginnings-chosic.com_.mp3", name: "NOW PLAYING: New Beginnings" },
+            { file: "Sonder(chosic.com).mp3", name: "NOW PLAYING: Sonder" },
+            { file: "Golden-Hour-chosic.com_.mp3", name: "NOW PLAYING: Golden Hour" },
+            { file: "Ghostrifter-Official-Devyzed-Downtown-Glow(chosic.com).mp3", name: "NOW PLAYING: Ghostrifter Official Devyzed Downtown Glow" },
+        ];
+        const audioPlayer = document.getElementById("bgMusic");
+        const playBtn = document.getElementById("playBtn");
+        const trackTitle = document.getElementById("trackName");
+        let isPlaying = false;
+        function setRandomSong() {
+            const randomIndex = Math.floor(Math.random() * playlist.length);
+            const currentTrack = playlist[randomIndex];
+            audioPlayer.src = currentTrack.file;
+            trackTitle.innerText = currentTrack.name;
+            trackTitle.classList.remove("fade-animation");
+            void trackTitle.offsetWidth; 
+            trackTitle.classList.add("fade-animation");
+        }
+        setRandomSong();
+        function togglePlay() {
+            if (!audioPlayer.src) {
+                setRandomSong();
+            }
+            if (!isPlaying) {
+                audioPlayer.play();
+                playBtn.innerText = "PAUSE ||";
+                isPlaying = true;
+            } else {
+                audioPlayer.pause();
+                playBtn.innerText = "PLAY ▶";
+                isPlaying = false;
+            }
+        }
+        audioPlayer.addEventListener('ended', function() {
+            setRandomSong();
+            audioPlayer.play();
+        });
+        const bgVideo = document.getElementById("bgVideo");
+        bgVideo.addEventListener("timeupdate", function() {
+            if (this.currentTime >= this.duration - 0.3) {
+                this.currentTime = 0.0; 
+                this.play();       
+            }
+        });
+    </script>
+</body>
+</html>
